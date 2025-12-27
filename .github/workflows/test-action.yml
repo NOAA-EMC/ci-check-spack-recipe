@@ -1,0 +1,43 @@
+name: Test Action
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+jobs:
+  test-action:
+    runs-on: ubuntu-latest
+    name: Test action behavior
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run action with ignore list
+        uses: ./
+        with:
+          cmakelists-txt: ci/CMakeLists.txt
+          recipe-file: ci/package.py
+          ignore-list: OPTION_TO_IGNORE MISSING_OPTION
+
+      - name: Run action without ignoring MISSING_OPTION
+        id: test-fail
+        uses: ./
+        continue-on-error: true
+        with:
+          cmakelists-txt: ci/CMakeLists.txt
+          recipe-file: ci/package.py
+          ignore-list: OPTION_TO_IGNORE
+
+      - name: Verify action failed as expected
+        shell: bash
+        run: |
+          if [ "${{ steps.test-fail.outcome }}" == "failure" ]; then
+            echo "✓ Action correctly detected missing MISSING_OPTION"
+            exit 0
+          else
+            echo "✗ Action should have failed but didn't"
+            exit 1
+          fi
