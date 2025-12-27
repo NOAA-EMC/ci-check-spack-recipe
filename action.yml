@@ -30,7 +30,7 @@ runs:
     - name: "Check Spack recipe"
       shell: bash
       run: |
-        ignore_exp="$(echo ${{ inputs.ignore-list }} | sed 's:[\s,]\+:|:g')"
+        ignore_exp="$(echo ${{ inputs.ignore-list }} | sed 's:[[:space:],]\+:|:g')"
         for opt in $(grep -ioP "^option\(\K[^ ]+" ${{ inputs.cmakelists-txt }} | grep -Ev "$ignore_exp") ; do
           echo -n "Checking for presence of '$opt' CMake option in package.py..."
           if [ ${{ inputs.alternative-grep }} == true ]; then
