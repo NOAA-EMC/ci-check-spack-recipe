@@ -1,11 +1,11 @@
-name: Test Action
+name: 'CI: Test ci-check-spack-recipe action'
 
 on:
   push:
-    branches: [develop]
   pull_request:
-    branches: [develop]
   workflow_dispatch:
+  schedule:
+  - cron: '0 0 25 * *'
 
 jobs:
   test-action:
