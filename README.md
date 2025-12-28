@@ -1,5 +1,7 @@
 # GitHub CI Action: check-spack-recipe
 
+![Test action](https://github.com/NOAA-EMC/ci-check-spack-recipe/actions/workflows/test-action.yml/badge.svg)
+
 This repository provides a GitHub Action for checking a Spack recipe for a 
 CMake-based package to confirm that it contains variants reflecting the
 options available in a given CMakeLists.txt.
