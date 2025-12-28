@@ -30,6 +30,13 @@ runs:
     - name: "Check Spack recipe"
       shell: bash
       run: |
+        # Enable debug tracing if GitHub Actions debug mode is enabled
+        if [ "${RUNNER_DEBUG}" = "1" ]; then
+          set -x
+          # Redirect trace output to prefix with ::debug::
+          exec 2> >(while IFS= read -r line; do echo "::debug::$line"; done)
+        fi
+        
         ignore_exp="$(echo ${{ inputs.ignore-list }} | sed 's:[[:space:],]\+:|:g')"
         for opt in $(grep -ioP "^option\(\K[^ ]+" ${{ inputs.cmakelists-txt }} | grep -Ev "$ignore_exp") ; do
           echo -n "Checking for presence of '$opt' CMake option in package.py..."
