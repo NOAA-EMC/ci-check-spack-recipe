@@ -32,9 +32,11 @@ runs:
       run: |
         # Enable debug tracing if GitHub Actions debug mode is enabled
         if [ "${RUNNER_DEBUG}" = "1" ]; then
+          # Set up a background process to prefix trace output
+          exec {trace_fd}> >(sed 's/^/::debug::/' >&2)
+          # Redirect trace output to our custom file descriptor
+          BASH_XTRACEFD=$trace_fd
           set -x
-          # Redirect trace output to prefix with ::debug::
-          exec 2> >(while IFS= read -r line; do echo "::debug::$line"; done)
         fi
         
         ignore_exp="$(echo ${{ inputs.ignore-list }} | sed 's:[[:space:],]\+:|:g')"
